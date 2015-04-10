@@ -3,10 +3,10 @@
 //  
 
 
-#import "AbstractConfiguration.h"
+#import "BerlinConfiguration.h"
 
 
-@implementation AbstractConfiguration
+@implementation BerlinConfiguration
 @synthesize parseApplicationId, parseClientId;
 
 #pragma mark - Object life cycle
@@ -14,8 +14,8 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.parseApplicationId = @"INSERT-APP-ID";
-        self.parseClientId = @"INSERT-CLIENT-ID";
+        self.parseApplicationId = @"JrrK4J45eIIWq3JDmhEiVXiDAwIm9wdnjSOhoQIe";
+        self.parseClientId = @"EhwiMGSbFZ9USgUa6SNLVhg543coWc9DNjcLVvxc";
     }
     return self;
 }
