@@ -1,12 +1,11 @@
-//
-//  Created by Pawel Dudek on 02/07/14.
-//  Copyright (c) 2014 Dudek. All rights reserved.
-//
+/*
+ * Copyright (c) 2015 Mobile Academy. All rights reserved.
+ */
 
 
 #import <MTDates/NSDate+MTDates.h>
 #import "CalendarCollectionViewLayout.h"
-#import "BeadView.h"
+#import "HandView.h"
 #import "SeparatorView.h"
 
 
@@ -17,11 +16,11 @@
 @property(nonatomic, strong) NSArray *cachedSeparatorsAttributes;
 @property(nonatomic, strong) NSArray *cachedCellAttributes;
 
-@property(nonatomic, readwrite) NSDate *beadViewDate;
+@property(nonatomic, readwrite) NSDate *handViewDate;
 @property(nonatomic, strong) NSDateFormatter *dateFormatter;
 @end
 
-NSString *const CalendarCollectionViewLayoutDecorationKindBead = @"CalendarCollectionViewLayoutDecorationKindBead";
+NSString *const CalendarCollectionViewLayoutDecorationKindHand = @"CalendarCollectionViewLayoutDecorationKindHand";
 NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"CalendarCollectionViewLayoutDecorationKindSeparator";
 
 @implementation CalendarCollectionViewLayout
@@ -42,7 +41,7 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
 - (void)prepareLayout {
     [super prepareLayout];
 
-    //TODO  Assignment 2: Register bead view class
+    //TODO  Assignment 2: Register hand view class
     //TODO  Assignment 3: Register separator view class
 
     id <CalendarCollectionViewLayoutDelegate> delegate = (id <CalendarCollectionViewLayoutDelegate>) self.collectionView.delegate;
@@ -64,8 +63,8 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
     NSArray *events = @[];
     //TODO Assignment 2: grab events using extended delegate pattern
 
-    if ([delegate respondsToSelector:@selector(beadViewDateForCalendarCollectionViewLayout:)]) {
-        self.beadViewDate = [delegate beadViewDateForCalendarCollectionViewLayout:self];
+    if ([delegate respondsToSelector:@selector(handViewDateForCalendarCollectionViewLayout:)]) {
+        self.handViewDate = [delegate handViewDateForCalendarCollectionViewLayout:self];
     }
     else {
         NSAssert(NO, @"%@ has to implement base calendar layout mehtods!", delegate);
@@ -110,7 +109,7 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *attributes = [NSMutableArray array];
 
-    //TODO Assignment 2: Add bead view attributes
+    //TODO Assignment 2: Add hand view attributes
 
     [attributes addObjectsFromArray:self.cachedCellAttributes];
     [attributes addObjectsFromArray:self.cachedSeparatorsAttributes];
@@ -123,22 +122,22 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)decorationViewKind atIndexPath:(NSIndexPath *)indexPath {
-    if ([decorationViewKind isEqualToString:CalendarCollectionViewLayoutDecorationKindBead]) {
-        return [self beadViewLayoutAttributes];
+    if ([decorationViewKind isEqualToString:CalendarCollectionViewLayoutDecorationKindHand]) {
+        return [self handViewLayoutAttributes];
     }
 
     return self.cachedSeparatorsAttributes[(NSUInteger) indexPath.row];
 }
 
-- (UICollectionViewLayoutAttributes *)beadViewLayoutAttributes {
+- (UICollectionViewLayoutAttributes *)handViewLayoutAttributes {
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
     Class layoutAttributesClass = [[self class] layoutAttributesClass];
-    UICollectionViewLayoutAttributes *attributes = [layoutAttributesClass layoutAttributesForDecorationViewOfKind:CalendarCollectionViewLayoutDecorationKindBead
+    UICollectionViewLayoutAttributes *attributes = [layoutAttributesClass layoutAttributesForDecorationViewOfKind:CalendarCollectionViewLayoutDecorationKindHand
                                                                                                     withIndexPath:indexPath];
 
     CGRect timeIndicatorFrame = CGRectZero;
 
-    //TODO Assignment 2: Calculate appropriate frame for the bead view
+    //TODO Assignment 2: Calculate appropriate frame for the hand view
 
     attributes.frame = timeIndicatorFrame;
     attributes.zIndex = 1;

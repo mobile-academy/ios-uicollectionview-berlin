@@ -63,7 +63,7 @@
     return [self.calendarEventsProvider.displayedDay mt_endOfCurrentDay];
 }
 
-- (NSDate *)beadViewDateForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout {
+- (NSDate *)handViewDateForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout {
     return [NSDate date];
 }
 

@@ -87,6 +87,9 @@
 //Tip: this method is called when collection view bounds change - collection view asks us whether we'd like to adjust
 // content offset to adjust for new bounds
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset {
+
+    //TODO: center on previously selected index path
+
     return [super targetContentOffsetForProposedContentOffset:proposedContentOffset];
 }
 

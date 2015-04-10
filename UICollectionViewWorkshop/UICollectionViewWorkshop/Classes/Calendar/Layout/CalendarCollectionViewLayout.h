@@ -1,7 +1,6 @@
-//
-//  Created by Pawel Dudek on 02/07/14.
-//  Copyright (c) 2014 Dudek. All rights reserved.
-//
+/*
+ * Copyright (c) 2015 Mobile Academy. All rights reserved.
+ */
 
 
 #import <Foundation/Foundation.h>
@@ -22,7 +21,7 @@
 - (NSDate *)startOfDisplayedDateForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout;
 - (NSDate *)endOfDisplayedDateForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout;
 
-- (NSDate *)beadViewDateForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout;
+- (NSDate *)handViewDateForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout;
 
 @end
 
@@ -31,6 +30,6 @@
 @property(nonatomic, readonly) NSDate *startOfDisplayedDay;
 @property(nonatomic, readonly) NSDate *endOfDisplayedDay;
 
-@property(nonatomic, readonly) NSDate *beadViewDate;
+@property(nonatomic, readonly) NSDate *handViewDate;
 
 @end

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		0CE5E28EE90C0D90A8E312E0 /* libPods-UICollectionViewWorkshopTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C07E95A142AAD6A9418F80BD /* libPods-UICollectionViewWorkshopTests.a */; };
 		431FE9AF1AD2F4050099DB7B /* CalendarCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FE9AD1AD2F4050099DB7B /* CalendarCollectionViewLayout.m */; };
-		431FE9B41AD2F4320099DB7B /* BeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FE9B01AD2F4320099DB7B /* BeadView.m */; };
+		431FE9B41AD2F4320099DB7B /* HandView.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FE9B01AD2F4320099DB7B /* HandView.m */; };
 		431FE9B51AD2F4320099DB7B /* SeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FE9B21AD2F4320099DB7B /* SeparatorView.m */; };
 		431FE9B81AD2F46E0099DB7B /* CalendarLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FE9B61AD2F46E0099DB7B /* CalendarLayoutAttributes.m */; };
 		431FE9BD1AD2F66C0099DB7B /* CalendarEventsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FE9B91AD2F66C0099DB7B /* CalendarEventsProvider.m */; };
@@ -82,8 +82,8 @@
 /* Begin PBXFileReference section */
 		431FE9AD1AD2F4050099DB7B /* CalendarCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarCollectionViewLayout.m; sourceTree = "<group>"; };
 		431FE9AE1AD2F4050099DB7B /* CalendarCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarCollectionViewLayout.h; sourceTree = "<group>"; };
-		431FE9B01AD2F4320099DB7B /* BeadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeadView.m; sourceTree = "<group>"; };
-		431FE9B11AD2F4320099DB7B /* BeadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeadView.h; sourceTree = "<group>"; };
+		431FE9B01AD2F4320099DB7B /* HandView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HandView.m; sourceTree = "<group>"; };
+		431FE9B11AD2F4320099DB7B /* HandView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HandView.h; sourceTree = "<group>"; };
 		431FE9B21AD2F4320099DB7B /* SeparatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeparatorView.m; sourceTree = "<group>"; };
 		431FE9B31AD2F4320099DB7B /* SeparatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeparatorView.h; sourceTree = "<group>"; };
 		431FE9B61AD2F46E0099DB7B /* CalendarLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarLayoutAttributes.m; sourceTree = "<group>"; };
@@ -521,8 +521,8 @@
 		B27A9CBF0364790442C9E0CA /* Decoration Views */ = {
 			isa = PBXGroup;
 			children = (
-				431FE9B11AD2F4320099DB7B /* BeadView.h */,
-				431FE9B01AD2F4320099DB7B /* BeadView.m */,
+				431FE9B11AD2F4320099DB7B /* HandView.h */,
+				431FE9B01AD2F4320099DB7B /* HandView.m */,
 				431FE9B31AD2F4320099DB7B /* SeparatorView.h */,
 				431FE9B21AD2F4320099DB7B /* SeparatorView.m */,
 			);
@@ -746,7 +746,7 @@
 				810860475EC25CD24D05153D /* PhoneRootTabBarController.m in Sources */,
 				810864D235A8C7778AD7F7B8 /* SpeakersViewController.m in Sources */,
 				431FE9B51AD2F4320099DB7B /* SeparatorView.m in Sources */,
-				431FE9B41AD2F4320099DB7B /* BeadView.m in Sources */,
+				431FE9B41AD2F4320099DB7B /* HandView.m in Sources */,
 				81086EEC247EB337DDF51858 /* CarouselViewController.m in Sources */,
 				431FE9C11AD2F6970099DB7B /* CalendarCollectionViewCell.m in Sources */,
 				431FE9B81AD2F46E0099DB7B /* CalendarLayoutAttributes.m in Sources */,
