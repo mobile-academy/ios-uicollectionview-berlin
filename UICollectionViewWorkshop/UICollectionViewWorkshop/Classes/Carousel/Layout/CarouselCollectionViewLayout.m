@@ -84,10 +84,14 @@
     return targetContentOffset;
 }
 
-#pragma mark - Helpers
-
 //Tip: this method is called when collection view bounds change - collection view asks us whether we'd like to adjust
 // content offset to adjust for new bounds
+- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset {
+    return [super targetContentOffsetForProposedContentOffset:proposedContentOffset];
+}
+
+#pragma mark - Helpers
+
 - (UICollectionViewLayoutAttributes *)layoutAttributesForUserFingerMovingWithVelocity:(CGPoint)velocity proposedContentOffset:(CGPoint)offset {
     UICollectionViewLayoutAttributes *layoutAttributesForItemToCenterOn = nil;
     CGRect nextVisibleBounds = [self collectionView].bounds;
