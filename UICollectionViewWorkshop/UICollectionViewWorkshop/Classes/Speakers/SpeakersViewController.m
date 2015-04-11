@@ -5,6 +5,10 @@
 
 #import "SpeakersViewController.h"
 #import "SpeakersDataSource.h"
+#import "UICollectionViewFlowLayout+SpeakersLayouts.h"
+
+@interface SpeakersViewController () <UICollectionViewDelegateFlowLayout>
+@end
 
 @implementation SpeakersViewController
 
@@ -15,8 +19,8 @@
     Please follow the TODOs to complete this exercise.
     (To list TODOs in AppCode use CMD+6 shortcut.)
 
-    HINT 1: This controller should be a collection view delegate.
-    HINT 2: `SpeakersDataSource` should be a collection view data source.
+    HINT 1: Only this file need to be changed.
+    HINT 2: Implement `-switchLayouts` and `-sizeForItemAtIndexPath:` methods. See TODOs.
  */
 + (instancetype)withDataSource:(SpeakersDataSource *)dataSource {
     return [[self alloc] initWithDataSource:dataSource];
@@ -36,22 +40,53 @@
 }
 
 - (void)loadView {
-    // Remove this after setting self.view
-    [super loadView];
-
-    // TODO 1. You should create a UICollectionView with UICollectionViewFlowLayout here.
-    // This is a place where you can set collection view's delegate and data source.
-
-    // HINT 1: Remember about special delegate protocol for UICollectionViewFlowLayout.
-    // HINT 2: For setting data source please see `-bindWithCollectionView:` method in `SpeakersDataSource` class (which should be invoked here).
+    UICollectionViewFlowLayout *flowLayout = [UICollectionViewFlowLayout speakersVerticalLayout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero
+                                                          collectionViewLayout:flowLayout];
+    collectionView.delegate = self;
+    [self.dataSource bindWithCollectionView:collectionView];
+    self.view = collectionView;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Switch"
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(switchLayouts)];
 }
 
-// TODO 4. You should override `-collectionView:layout:sizeForItemAtIndexPath:` method to provide cell size.
-// HINT: Remember about special delegate protocol for UICollectionViewFlowLayout.
+- (void)switchLayouts {
+    UICollectionView *collectionView = (UICollectionView *) self.view;
+    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
+    BOOL isHorizontalLayout = flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal;
+    UICollectionViewLayout *toLayout = isHorizontalLayout
+            ? [UICollectionViewFlowLayout speakersVerticalLayout]
+            : [UICollectionViewFlowLayout speakersHorizontalLayout];
+
+    collectionView.pagingEnabled = !isHorizontalLayout;
+    [collectionView setCollectionViewLayout:toLayout animated:YES];
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    CGSize size;
+
+    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *) collectionViewLayout;
+    BOOL isHorizontalLayout = flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal;
+    if (isHorizontalLayout) {
+        CGFloat width = CGRectGetWidth(collectionView.bounds);
+        CGFloat height = CGRectGetHeight(collectionView.bounds) - collectionView.contentInset.top - collectionView.contentInset.bottom;
+        size = CGSizeMake(width, height);
+    } else {
+        CGFloat width = CGRectGetWidth(collectionView.bounds) * 0.5f;
+        size = CGSizeMake(width, width);
+    }
+
+    CGFloat margin = 20.f;
+    return CGSizeMake(size.width - margin, size.height - margin);
+}
 
 @end
