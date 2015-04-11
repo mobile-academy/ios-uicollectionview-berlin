@@ -30,6 +30,7 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"Cell"];
 
     self.collectionView.backgroundColor = [UIColor greenColor];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
