@@ -51,15 +51,25 @@
         lastVisibleItem = [[self collectionView] numberOfItemsInSection:0];
     }
 
-    //TODO: Calculate position for visible cells
+    NSMutableArray *layoutAttributes = [NSMutableArray array];
 
-    return @[];
+    for (NSInteger j = (NSInteger) firstVisibleItem; j < lastVisibleItem; j++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:j inSection:0];
+        [layoutAttributes addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
+    }
+
+    return layoutAttributes;
 }
-
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewLayoutAttributes *attributes = [[[self class] layoutAttributesClass] layoutAttributesForCellWithIndexPath:indexPath];
 
-    //TODO: Calculate position for item at given index path
+    CGRect bounds = CGRectZero;
+    bounds.size = self.itemSize;
+
+    attributes.bounds = bounds;
+    CGFloat x = self.rightLeftMargin + indexPath.row * (self.itemSize.width + self.interItemSpace) + self.itemSize.width / 2;
+    CGFloat y = self.collectionView.frame.size.height / 2;
+    attributes.center = CGPointMake(x, y);
 
     return attributes;
 }
@@ -87,10 +97,15 @@
 //Tip: this method is called when collection view bounds change - collection view asks us whether we'd like to adjust
 // content offset to adjust for new bounds
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset {
+    UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:self.indexPathForCenteredItem];
+    CGPoint targetContentOffset = proposedContentOffset;
 
-    //TODO: center on previously selected index path
+    if (attributes) {
+        targetContentOffset.x = attributes.center.x - self.collectionView.bounds.size.width / 2;
+        targetContentOffset.y = 0;
+    }
 
-    return [super targetContentOffsetForProposedContentOffset:proposedContentOffset];
+    return targetContentOffset;
 }
 
 #pragma mark - Helpers
@@ -99,9 +114,29 @@
     UICollectionViewLayoutAttributes *layoutAttributesForItemToCenterOn = nil;
     CGRect nextVisibleBounds = [self collectionView].bounds;
     nextVisibleBounds.origin = offset;
+    NSArray *layoutAttributesInRect = [self layoutAttributesForElementsInRect:nextVisibleBounds];
 
-    //TODO: Calculate which layout attributes should be selected as next centered layout attributes.
-    //Tips: Use nextVisibleBounds calculated above! Make sure you also use velocity for determining direction (left, right or just dragging - all cases are important!)
+    if (velocity.x > 0.0f) {
+        layoutAttributesForItemToCenterOn = [layoutAttributesInRect lastObject];
+    }
+    else if (velocity.x < 0.0f) {
+        layoutAttributesForItemToCenterOn = [layoutAttributesInRect firstObject];
+    }
+    else {
+        CGFloat distanceToCenter = CGFLOAT_MAX;
+
+        for (UICollectionViewLayoutAttributes *attributes in layoutAttributesInRect) {
+            CGFloat midOfFrame = CGRectGetMidX(self.collectionView.frame);
+            CGFloat center = self.collectionView.contentOffset.x + midOfFrame;
+
+            CGFloat distance = ABS(center - attributes.center.x);
+
+            if (distance < distanceToCenter) {
+                distanceToCenter = distance;
+                layoutAttributesForItemToCenterOn = attributes;
+            }
+        }
+    }
 
     return layoutAttributesForItemToCenterOn;
 }
