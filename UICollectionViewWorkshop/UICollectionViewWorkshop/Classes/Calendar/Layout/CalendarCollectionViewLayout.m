@@ -7,6 +7,7 @@
 #import "CalendarCollectionViewLayout.h"
 #import "HandView.h"
 #import "SeparatorView.h"
+#import "CalendarLayoutAttributes.h"
 
 
 @interface CalendarCollectionViewLayout ()
@@ -17,7 +18,6 @@
 @property(nonatomic, strong) NSArray *cachedCellAttributes;
 
 @property(nonatomic, readwrite) NSDate *handViewDate;
-@property(nonatomic, strong) NSDateFormatter *dateFormatter;
 @end
 
 NSString *const CalendarCollectionViewLayoutDecorationKindHand = @"CalendarCollectionViewLayoutDecorationKindHand";
@@ -25,24 +25,12 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
 
 @implementation CalendarCollectionViewLayout
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        self.dateFormatter = [[NSDateFormatter alloc] init];
-        [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-        [self.dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-    }
-
-    return self;
-}
-
-#pragma mark - UICollectionView Layout
-
 - (void)prepareLayout {
     [super prepareLayout];
 
-    //TODO  Assignment 2: Register hand view class
-    //TODO  Assignment 3: Register separator view class
+    [self registerClass:[HandView class] forDecorationViewOfKind:CalendarCollectionViewLayoutDecorationKindHand];
+    [self registerClass:[SeparatorView class]
+forDecorationViewOfKind:CalendarCollectionViewLayoutDecorationKindSeparator];
 
     id <CalendarCollectionViewLayoutDelegate> delegate = (id <CalendarCollectionViewLayoutDelegate>) self.collectionView.delegate;
 
@@ -60,8 +48,14 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
         NSAssert(NO, @"%@ has to implement base calendar layout mehtods!", delegate);
     }
 
-    NSArray *events = @[];
-    //TODO Assignment 2: grab events using extended delegate pattern
+    NSArray *events;
+
+    if ([delegate respondsToSelector:@selector(calendarEventsForCalendarCollectionViewLayout:)]) {
+        events = [delegate calendarEventsForCalendarCollectionViewLayout:self];
+    }
+    else {
+        NSAssert(NO, @"%@ has to implement base calendar layout mehtods!", delegate);
+    }
 
     if ([delegate respondsToSelector:@selector(handViewDateForCalendarCollectionViewLayout:)]) {
         self.handViewDate = [delegate handViewDateForCalendarCollectionViewLayout:self];
@@ -80,7 +74,21 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
     NSMutableArray *cellAttributes = [NSMutableArray array];
 
     for (NSUInteger index = 0; index < [self.collectionView numberOfItemsInSection:0]; ++index) {
-        //TODO Assignment 2: Calculate position and size of layout attributes for cell for given event, based on its start and end date
+        id <CalendarEvent> event = events[index];
+
+        NSInteger eventStartingPosition = [self.startOfDisplayedDay mt_minutesUntilDate:event.startDate];
+        NSInteger eventDuration = [event.startDate mt_minutesUntilDate:event.endDate];
+
+        CGPoint eventCenter = CGPointMake(CGRectGetMidX(self.collectionView.bounds), eventStartingPosition + eventDuration / 2);
+        eventCenter.y = roundf(eventCenter.y);
+
+        NSIndexPath *path = [NSIndexPath indexPathForItem:index inSection:0];
+        UICollectionViewLayoutAttributes *attributes = [[[self class] layoutAttributesClass] layoutAttributesForCellWithIndexPath:path];
+
+        attributes.center = eventCenter;
+        attributes.size = CGSizeMake(CGRectGetWidth(self.collectionView.bounds), eventDuration);
+
+        [cellAttributes addObject:attributes];
     }
 
     self.cachedCellAttributes = [cellAttributes copy];
@@ -90,9 +98,47 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
     NSMutableArray *separatorAttributes = [NSMutableArray array];
 
     NSInteger numberOfFullHours = [self.startOfDisplayedDay mt_hoursUntilDate:self.endOfDisplayedDay] + 1;
-    // TODO Assignment 3: Calculate separator layout attributes based on number of full hours (include half hour separators as well!)
+    NSInteger attributeItem = 0;
 
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+
+
+    for (NSUInteger index = 0; index < numberOfFullHours; ++index) {
+        NSDate *hourDate = [self.startOfDisplayedDay mt_dateHoursAfter:index];
+
+        CalendarLayoutAttributes *attributes = [self separatorAttributesAtIndex:attributeItem withDate:hourDate];
+
+        attributes.separatorText = [dateFormatter stringFromDate:hourDate];
+        attributes.separatorColor = [UIColor colorWithWhite:0.75f alpha:1.0f];
+
+        [separatorAttributes addObject:attributes];
+
+        attributeItem++;
+
+        NSDate *halfHourDate = [hourDate mt_dateMinutesAfter:30];
+        attributes = [self separatorAttributesAtIndex:attributeItem withDate:halfHourDate];
+        attributes.separatorColor = [UIColor colorWithWhite:0.87f alpha:1.0f];
+
+        [separatorAttributes addObject:attributes];
+
+        attributeItem++;
+    }
     self.cachedSeparatorsAttributes = [separatorAttributes copy];
+}
+
+- (CalendarLayoutAttributes *)separatorAttributesAtIndex:(NSInteger)attributesIndex withDate:(NSDate *)date {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:attributesIndex inSection:0];
+    CalendarLayoutAttributes *attributes = [[[self class] layoutAttributesClass] layoutAttributesForDecorationViewOfKind:CalendarCollectionViewLayoutDecorationKindSeparator
+                                                                                                           withIndexPath:indexPath];
+    attributes.frame = CGRectMake(0, 0, CGRectGetWidth(self.collectionView.bounds), 20);
+    attributes.zIndex = -2;
+
+    CGFloat yPosition = [self.startOfDisplayedDay mt_minutesUntilDate:date];
+    attributes.center = CGPointMake(CGRectGetMidX(self.collectionView.frame), yPosition);
+
+    return attributes;
 }
 
 #pragma mark - Content Size
@@ -108,9 +154,7 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *attributes = [NSMutableArray array];
-
-    //TODO Assignment 2: Add hand view attributes
-
+    [attributes addObject:[self beadViewLayoutAttributes]];
     [attributes addObjectsFromArray:self.cachedCellAttributes];
     [attributes addObjectsFromArray:self.cachedSeparatorsAttributes];
 
@@ -123,26 +167,34 @@ NSString *const CalendarCollectionViewLayoutDecorationKindSeparator = @"Calendar
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)decorationViewKind atIndexPath:(NSIndexPath *)indexPath {
     if ([decorationViewKind isEqualToString:CalendarCollectionViewLayoutDecorationKindHand]) {
-        return [self handViewLayoutAttributes];
+        return [self beadViewLayoutAttributes];
     }
 
     return self.cachedSeparatorsAttributes[(NSUInteger) indexPath.row];
 }
 
-- (UICollectionViewLayoutAttributes *)handViewLayoutAttributes {
+- (UICollectionViewLayoutAttributes *)beadViewLayoutAttributes {
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-    Class layoutAttributesClass = [[self class] layoutAttributesClass];
-    UICollectionViewLayoutAttributes *attributes = [layoutAttributesClass layoutAttributesForDecorationViewOfKind:CalendarCollectionViewLayoutDecorationKindHand
-                                                                                                    withIndexPath:indexPath];
+    UICollectionViewLayoutAttributes *attributes = [[[self class] layoutAttributesClass] layoutAttributesForDecorationViewOfKind:CalendarCollectionViewLayoutDecorationKindHand
+                                                                                                                   withIndexPath:indexPath];
+
+    NSInteger minutes = [[self startOfDisplayedDay] mt_minutesUntilDate:self.handViewDate];
 
     CGRect timeIndicatorFrame = CGRectZero;
 
-    //TODO Assignment 2: Calculate appropriate frame for the hand view
+    timeIndicatorFrame.size = CGSizeMake(CGRectGetWidth(self.collectionView.bounds), 1);
+    timeIndicatorFrame.origin.y = minutes;
 
     attributes.frame = timeIndicatorFrame;
     attributes.zIndex = 1;
 
     return attributes;
+}
+
+#pragma mark -
+
++ (Class)layoutAttributesClass {
+    return [CalendarLayoutAttributes class];
 }
 
 @end

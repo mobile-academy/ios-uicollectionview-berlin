@@ -23,6 +23,8 @@
 
 - (NSDate *)handViewDateForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout;
 
+- (NSArray *)calendarEventsForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout;
+
 @end
 
 

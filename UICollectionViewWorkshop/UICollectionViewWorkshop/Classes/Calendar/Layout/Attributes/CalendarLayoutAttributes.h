@@ -7,7 +7,7 @@
 
 
 @interface CalendarLayoutAttributes : UICollectionViewLayoutAttributes
-
-//TODO Assignment 3: Add text and color attributes
+@property(nonatomic, strong) UIColor *separatorColor;
+@property(nonatomic, copy) NSString *separatorText;
 
 @end

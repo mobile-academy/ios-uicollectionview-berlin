@@ -67,4 +67,8 @@
     return [NSDate date];
 }
 
+- (NSArray *)calendarEventsForCalendarCollectionViewLayout:(CalendarCollectionViewLayout *)layout {
+    return self.calendarEvents;
+}
+
 @end

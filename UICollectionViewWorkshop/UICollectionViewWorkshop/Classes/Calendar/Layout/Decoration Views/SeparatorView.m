@@ -58,6 +58,13 @@
 - (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     [super applyLayoutAttributes:layoutAttributes];
 
-    // TODO Assignment 3: Apply text and color from custom layout attributes
+    if ([layoutAttributes isKindOfClass:[CalendarLayoutAttributes class]]) {
+        CalendarLayoutAttributes *calendarLayoutAttributes = (CalendarLayoutAttributes *) layoutAttributes;
+
+        self.separator.backgroundColor = calendarLayoutAttributes.separatorColor;
+        self.separatorLabel.text = calendarLayoutAttributes.separatorText;
+        [self setNeedsLayout];
+    }
 }
+
 @end
